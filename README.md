@@ -175,6 +175,103 @@ rates below are specified as *records/second*.
 | High (167 Directives) |      426      | 127,946,398 |  82,677,845,324 | 106,367.27 |
 | High (167 Directives) |      426      | 511,785,592 | 330,711,381,296 | 105,768.93 |
 
+## Byte Size and Time Duration Support
+
+Wrangler now supports byte sizes and time durations as first-class citizens in the recipe language. This feature enables easy handling of file sizes, data transfer rates, and time-based operations.
+
+### Byte Size Support
+
+Byte sizes can be specified using the following format:
+- `NKB` or `Nkb` for kilobytes (e.g., `1024KB`, `1.5kb`)
+- `NMB` or `Nmb` for megabytes (e.g., `2MB`, `0.5mb`)
+- `NGB` or `Ngb` for gigabytes (e.g., `1GB`, `0.25gb`)
+
+Example usage:
+```sql
+set-column :file_size exp:{2.5GB};
+set-column :transfer_rate exp:{100KB};
+```
+
+### Time Duration Support
+
+Time durations can be specified using the following format:
+- `Nms` for milliseconds (e.g., `500ms`, `1000ms`)
+- `Ns` for seconds (e.g., `2s`, `1.5s`)
+- `Nm` for minutes (e.g., `5m`, `0.5m`)
+- `Nh` for hours (e.g., `1h`, `0.25h`)
+
+Example usage:
+```sql
+set-column :response_time exp:{500ms};
+set-column :processing_time exp:{2.5m};
+```
+
+### Aggregate Stats Directive
+
+The new `aggregate-stats` directive allows you to aggregate byte sizes and time durations across records. It takes four arguments:
+1. Input column for byte size
+2. Input column for time duration
+3. Output column for total byte size
+4. Output column for total time duration
+
+Example usage:
+```sql
+#pragma load-directives aggregate-stats;
+aggregate-stats :data_size :response_time :total_size :total_time;
+```
+
+The directive will:
+- Sum up all byte sizes in the input column and store the result in the total size column
+- Sum up all time durations in the input column and store the result in the total time column
+- Handle unit conversions automatically (e.g., KB to MB, ms to s)
+
+### Error Handling
+
+The system provides clear error messages for:
+- Invalid byte size formats (e.g., `10XB`, `1.5TB`)
+- Invalid time duration formats (e.g., `5y`, `1.5d`)
+- Missing or invalid arguments in the aggregate-stats directive
+- Invalid column names or types
+
+Example error messages:
+```
+Invalid byte size format: '10XB'. Supported units are KB, MB, GB
+Invalid time duration format: '5y'. Supported units are ms, s, m, h
+Missing required arguments in aggregate-stats directive
+```
+
+### Best Practices
+
+1. **Unit Consistency**: While the system can handle different units, it's recommended to use consistent units within a column for better readability and performance.
+
+2. **Precision**: For critical calculations, consider using larger units (e.g., MB instead of KB) to avoid floating-point precision issues.
+
+3. **Validation**: Always validate input data before using the aggregate-stats directive to ensure all values are in the correct format.
+
+4. **Performance**: For large datasets, consider using the aggregate-stats directive after filtering the data to improve performance.
+
+### Examples
+
+1. **Basic Usage**:
+```sql
+set-column :file_size exp:{2.5GB};
+set-column :process_time exp:{1.5m};
+```
+
+2. **With Aggregate Stats**:
+```sql
+#pragma load-directives aggregate-stats;
+aggregate-stats :file_size :process_time :total_size :total_time;
+```
+
+3. **Complex Recipe**:
+```sql
+parse-as-csv :body ',' true;
+set-column :file_size exp:{2.5GB};
+set-column :process_time exp:{1.5m};
+#pragma load-directives aggregate-stats;
+aggregate-stats :file_size :process_time :total_size :total_time;
+```
 
 ## Contact
 
