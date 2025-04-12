@@ -1,0 +1,101 @@
+# AI-Assisted Development Prompts
+
+## Initial Setup and Understanding
+1. "I need to add support for byte sizes (KB, MB, GB) and time durations (ms, s, m, h) to the Wrangler library. Can you help me understand the current codebase structure and where these changes should be made?"
+
+2. "I'm looking at the Directives.g4 grammar file. How should I add new tokens for byte sizes and time durations? I need to support formats like '10KB', '1.5MB', '500ms', '2.1s'."
+
+3. "What's the best way to structure the new token classes? Should I create separate classes for ByteSize and TimeDuration, or can they share some common functionality?"
+
+## Conceptual Development Questions
+31. "What's the best development approach for this feature? Should I implement the token parsing first or start with the aggregate-stats directive?"
+
+32. "How should I break down this feature into smaller, manageable tasks? What should be the order of implementation?"
+
+33. "What's the best way to ensure the new functionality integrates well with the existing codebase? Should I focus on backward compatibility first?"
+
+34. "How should I approach testing? Should I write tests first (TDD) or implement the functionality first?"
+
+35. "What's the best way to handle the transition period where some code might still use the old format? Should I provide migration tools?"
+
+36. "How should I structure the code to make it easy to add new units in the future? Should I use an enum-based approach or something more flexible?"
+
+37. "What's the best way to handle internationalization of unit names? Should I support different unit names in different languages?"
+
+38. "How should I approach documentation? Should I document as I go or wait until the feature is complete?"
+
+39. "What's the best way to gather feedback on the implementation? Should I create a prototype first?"
+
+40. "How should I handle versioning? Should this be a major version change or can it be a minor update?"
+
+41. "What's the best way to ensure the new functionality is performant? Should I benchmark different approaches?"
+
+42. "How should I handle edge cases in unit conversions? Should I provide warnings or errors for potential precision loss?"
+
+43. "What's the best way to make the new functionality extensible? Should I use a plugin architecture?"
+
+44. "How should I approach error handling? Should I use checked exceptions or runtime exceptions?"
+
+45. "What's the best way to ensure the code is maintainable? Should I focus on code organization or documentation first?"
+
+## Implementation Questions
+4. "I need to create ByteSize and TimeDuration classes that extend Token. What methods should they implement and how should they handle unit conversions?"
+
+5. "I'm working on the RecipeVisitor class. How should I handle the new byte size and time duration tokens? I need to add visit methods for them."
+
+6. "I need to implement an aggregate-stats directive that can sum up byte sizes and time durations. What's the best way to handle the aggregation and unit conversions?"
+
+7. "How should I handle unit conversions in the ByteSize and TimeDuration classes? Should I use a conversion table or calculate it dynamically?"
+
+8. "What's the best way to implement the aggregate-stats directive? Should it handle the aggregation in a single pass or multiple passes?"
+
+## Testing and Debugging
+9. "I'm writing tests for the new functionality. What edge cases should I consider for byte size and time duration parsing?"
+
+10. "I'm getting a compilation error in RecipeVisitor. The error says 'Exception DirectiveParseException is not compatible with throws clause'. How should I fix this?"
+
+11. "My tests are failing for invalid byte size formats. How should I improve the error handling in the ByteSize class?"
+
+12. "How should I test the aggregate-stats directive? What are the key scenarios I should cover?"
+
+13. "I need to test unit conversions. What are the best test cases to ensure all conversions work correctly?"
+
+## Code Review and Improvements
+14. "I've implemented the basic functionality. Can you review the code and suggest any improvements for better error handling or performance?"
+
+15. "I need to add more test cases for the aggregate-stats directive. What scenarios should I cover to ensure it works correctly?"
+
+16. "How can I optimize the unit conversion logic? Are there any performance considerations I should be aware of?"
+
+17. "What's the best way to handle floating-point precision in the unit conversions?"
+
+## Documentation
+18. "I need to update the README.md to document the new byte size and time duration support. What information should I include?"
+
+19. "How should I document the usage of the new aggregate-stats directive? I need to explain the arguments and provide examples."
+
+20. "What examples should I include in the documentation to demonstrate the new functionality?"
+
+## Integration and Compatibility
+21. "How should I ensure backward compatibility with existing code that might use similar functionality?"
+
+22. "What's the best way to integrate the new token types with the existing expression parser?"
+
+23. "How should I handle cases where users might mix different units in the aggregate-stats directive?"
+
+## Error Handling and Validation
+24. "What validation should I add for the byte size and time duration formats?"
+
+25. "How should I handle overflow cases in unit conversions?"
+
+26. "What error messages should I provide for invalid input formats?"
+
+## Performance Considerations
+27. "Are there any performance optimizations I should consider for the unit conversion logic?"
+
+28. "How can I make the aggregate-stats directive more efficient when processing large datasets?"
+
+## Future Enhancements
+29. "What additional features could be added to the byte size and time duration support in the future?"
+
+30. "How could the aggregate-stats directive be extended to support more complex aggregations?" 
