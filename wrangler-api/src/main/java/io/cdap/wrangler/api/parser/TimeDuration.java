@@ -45,6 +45,7 @@ public class TimeDuration implements Token {
     input = input.trim().toLowerCase(); // Normalize input
 
     double number;
+
     try {
         number = Double.parseDouble(input.replaceAll("[^\\d.]", ""));
     } catch (NumberFormatException e) {

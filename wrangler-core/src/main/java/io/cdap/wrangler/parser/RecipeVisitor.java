@@ -37,6 +37,8 @@ import io.cdap.wrangler.api.parser.Text;
 import io.cdap.wrangler.api.parser.TextList;
 import io.cdap.wrangler.api.parser.TimeDuration;
 import io.cdap.wrangler.api.parser.Token;
+import io.cdap.wrangler.api.CompileException;
+import io.cdap.wrangler.api.DirectiveParseException;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -159,7 +161,7 @@ public final class RecipeVisitor extends DirectivesBaseVisitor<RecipeSymbol.Buil
   }
 
   /**
-   * A Directive can include number ranges like start:end=value[,start:end=value]*. This
+   * A Directive can consist of number ranges like start:end=value[,start:end=value]*. This
    * visitor method allows you to collect all the number ranges and create a token type
    * <code>Ranges</code>.
    */
@@ -329,28 +331,27 @@ public final class RecipeVisitor extends DirectivesBaseVisitor<RecipeSymbol.Buil
 
   @Override
   public RecipeSymbol.Builder visitByteSizeArg(DirectivesParser.ByteSizeArgContext ctx) {
-    // Get the raw string representing the byte size argument from the parse tree
-    String byteSizeStr = ctx.getText();
-
-    // Create a ByteSize token using the raw string
-    ByteSize byteSizeToken = new ByteSize(byteSizeStr);
-
-    // Add the token to the TokenGroup (assuming tokenGroup is available)
-    tokenGroup.add(byteSizeToken);  // Add the ByteSize token to the token group
-
-    return builder;  // Return the RecipeSymbol.Builder instance
-  }
-
-  
-  @Override
-  public RecipeSymbol.Builder visitTimeDurationArg(DirectivesParser.TimeDurationArgContext ctx) {
-    String timeDurationStr = ctx.getText();  // Get the raw string from the parse tree
-    TimeDuration timeDurationToken = new TimeDuration(timeDurationStr);  // Instantiate TimeDuration token
-
-    tokenGroup.add(timeDurationToken);  // Add to TokenGroup (or similar data structure)
+    try {
+      String byteSizeStr = ctx.BYTE_SIZE().getText();
+      builder.addToken(new ByteSize(byteSizeStr));
+    } catch (IllegalArgumentException e) {
+      throw new RuntimeException(String.format("Invalid byte size format: %s. Expected format: <number><unit> where unit is B, KB, MB, GB, TB, PB", 
+          ctx.BYTE_SIZE().getText()), e);
+    }
     return builder;
   }
 
+  @Override
+  public RecipeSymbol.Builder visitTimeDurationArg(DirectivesParser.TimeDurationArgContext ctx) {
+    try {
+      String durationStr = ctx.TIME_DURATION().getText();
+      builder.addToken(new TimeDuration(durationStr));
+    } catch (IllegalArgumentException e) {
+      throw new RuntimeException(String.format("Invalid time duration format: %s. Expected format: <number><unit> where unit is s, m, h, d", 
+          ctx.TIME_DURATION().getText()), e);
+    }
+    return builder;
+  }
 
   private SourceInfo getOriginalSource(ParserRuleContext ctx) {
     int a = ctx.getStart().getStartIndex();

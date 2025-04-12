@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.cdap.wrangler.api.parser;
+package io.cdap.wrangler;
 
+import io.cdap.wrangler.api.parser.ByteSize;
 import org.junit.Test;                  // Correct import for @Test annotation
 import static org.junit.Assert.assertEquals; // Correct static import for assertEquals
 
 public class ByteSizeTest {
+
     @Test
     public void testParseByteSizeKB() {
         ByteSize byteSize = new ByteSize("10KB");
