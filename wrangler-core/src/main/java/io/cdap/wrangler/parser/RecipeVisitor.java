@@ -19,9 +19,11 @@ package io.cdap.wrangler.parser;
 import io.cdap.wrangler.api.LazyNumber;
 import io.cdap.wrangler.api.RecipeSymbol;
 import io.cdap.wrangler.api.SourceInfo;
+import io.cdap.wrangler.api.TokenGroup;
 import io.cdap.wrangler.api.Triplet;
 import io.cdap.wrangler.api.parser.Bool;
 import io.cdap.wrangler.api.parser.BoolList;
+import io.cdap.wrangler.api.parser.ByteSize;
 import io.cdap.wrangler.api.parser.ColumnName;
 import io.cdap.wrangler.api.parser.ColumnNameList;
 import io.cdap.wrangler.api.parser.DirectiveName;
@@ -33,6 +35,7 @@ import io.cdap.wrangler.api.parser.Properties;
 import io.cdap.wrangler.api.parser.Ranges;
 import io.cdap.wrangler.api.parser.Text;
 import io.cdap.wrangler.api.parser.TextList;
+import io.cdap.wrangler.api.parser.TimeDuration;
 import io.cdap.wrangler.api.parser.Token;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
@@ -64,6 +67,13 @@ import java.util.Map;
  * that is returned by this function.</p>
  */
 public final class RecipeVisitor extends DirectivesBaseVisitor<RecipeSymbol.Builder> {
+
+  private TokenGroup tokenGroup;
+
+  public RecipeVisitor() {
+    this.tokenGroup = new TokenGroup();  // Initialize the token group
+  }
+
   private RecipeSymbol.Builder builder = new RecipeSymbol.Builder();
 
   /**
@@ -316,6 +326,31 @@ public final class RecipeVisitor extends DirectivesBaseVisitor<RecipeSymbol.Buil
     builder.addToken(new TextList(strs));
     return builder;
   }
+
+  @Override
+  public RecipeSymbol.Builder visitByteSizeArg(DirectivesParser.ByteSizeArgContext ctx) {
+    // Get the raw string representing the byte size argument from the parse tree
+    String byteSizeStr = ctx.getText();
+
+    // Create a ByteSize token using the raw string
+    ByteSize byteSizeToken = new ByteSize(byteSizeStr);
+
+    // Add the token to the TokenGroup (assuming tokenGroup is available)
+    tokenGroup.add(byteSizeToken);  // Add the ByteSize token to the token group
+
+    return builder;  // Return the RecipeSymbol.Builder instance
+  }
+
+  
+  @Override
+  public RecipeSymbol.Builder visitTimeDurationArg(DirectivesParser.TimeDurationArgContext ctx) {
+    String timeDurationStr = ctx.getText();  // Get the raw string from the parse tree
+    TimeDuration timeDurationToken = new TimeDuration(timeDurationStr);  // Instantiate TimeDuration token
+
+    tokenGroup.add(timeDurationToken);  // Add to TokenGroup (or similar data structure)
+    return builder;
+  }
+
 
   private SourceInfo getOriginalSource(ParserRuleContext ctx) {
     int a = ctx.getStart().getStartIndex();

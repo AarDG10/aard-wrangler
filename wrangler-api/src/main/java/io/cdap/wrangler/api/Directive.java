@@ -35,12 +35,16 @@ import java.util.List;
  *     public UsageDefinition define() {
  *       UsageDefinition.Builder builder = UsageDefinition.builder();
  *       builder.define("col", TokenType.COLUMN_NAME)
+ *       builder.define("byteSize", TokenType.BYTE_SIZE);
+ *       builder.define("timeDuration", TokenType.TIME_DURATION);
  *       return builder.build();
  *     }
  *
  *     @Override
  *     public void initialize(Argument args) throws DirectiveParseException {
  *      this.columnArgs = args.value("col");
+ *      ByteSize byteSizeArg = args.value("byteSize");
+ *      TimeDuration timeDurationArg = args.value("timeDuration");
  *     }
  *
  *     @Override

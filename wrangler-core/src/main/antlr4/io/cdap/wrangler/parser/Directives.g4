@@ -64,7 +64,17 @@ directive
     | stringList
     | numberRanges
     | properties
+    | byteSizeArg     
+    |timeDurationArg
   )*?
+  ;
+
+byteSizeArg
+  : BYTE_SIZE
+  ;
+
+timeDurationArg
+  : TIME_DURATION
   ;
 
 ifStatement
@@ -256,6 +266,29 @@ Bool
 Number
  : Int ('.' Digit*)?
  ;
+
+BYTE_SIZE
+  : DIGITS ('.' DIGITS)? BYTE_UNIT
+  ;
+
+TIME_DURATION
+  : DIGITS ('.' DIGITS)? TIME_UNIT
+  ;
+
+fragment BYTE_UNIT
+  : [KkMmGg][Bb]
+  ;
+
+fragment TIME_UNIT
+  : [mM][sS]
+  | [sS]
+  | [mM]
+  | [hH]
+  ;
+
+fragment DIGITS
+  : [0-9]+
+  ;
 
 Identifier
  : [a-zA-Z_\-] [a-zA-Z_0-9\-]*
